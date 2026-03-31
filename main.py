@@ -1,5 +1,5 @@
 from pathlib import Path
-from src.TUI import ScimagoExplorer
+from src.TUI.scimago_explorer import ScimagoExplorer
 
 if __name__ == "__main__":
     SCIMAGO_CSV_PATH = Path('data') / 'scimagojr 2024.csv'

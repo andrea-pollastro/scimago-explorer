@@ -7,10 +7,11 @@ COLS_DISPLAY_NAMES = {
     'title': 'Title',
     'type': 'Type',
     'publisher': 'Publisher', 
-    'open_access': 'OA', 
-    'open_access_diamond': 'OAD', 
+    'open_access': 'Open Access', 
+    'open_access_diamond': 'Open Access Diamond', 
     'sjr': 'SJR', 
     'sjr_best_quartile': 'SJR Q', 
+    'issn': 'ISSN',
     'h_index': 'H-index', 
     'country': 'Country', 
     'categories': 'Categories', 
@@ -37,7 +38,6 @@ def clean_dataframe(df: pd.DataFrame) -> None:
     COLUMNS_TO_DROP: List[str] = [
         'Rank',
         'Sourceid',
-        'Issn',
         'Total Docs. (2024)',
         'Total Docs. (3years)',
         'Total Refs.',
@@ -69,34 +69,6 @@ def clean_dataframe(df: pd.DataFrame) -> None:
         .str.lower()
         .str.replace(' ', '_')
     )
-
-def get_categories(df: pd.DataFrame) -> Dict[str, np.ndarray]:
-    categories = (
-        df["categories"]
-        .str.split(";")
-        .explode()
-        .str.strip()
-        .str.replace(r"\s*\(Q\d\)", "", regex=True)
-        .dropna()
-        .unique()
-    )
-
-    areas = (
-        df["areas"]
-        .str.split(";")
-        .explode()
-        .str.strip()
-        .dropna()
-        .unique()
-    )
-
-    return {
-        'type': df['type'].unique(),
-        'country': df['country'].unique(),
-        'publisher': df['publisher'].unique(),
-        'categories': categories,
-        'areas': areas,
-    }
 
 def load_data(path: Path) -> pd.DataFrame:
     if path.suffix == '.csv':
