@@ -30,6 +30,8 @@ COLS_WIDTH = {
     'categories': 50, 
     'areas': None, 
 }
+SORT_BY_COLS = ['sjr', 'sjr_best_quartile', 'h_index']
+REVERTED_ORDER = ['sjr_best_quartile']
 
 def clean_dataframe(df: pd.DataFrame) -> None:
     COLUMNS_TO_DROP: List[str] = [
