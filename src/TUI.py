@@ -12,15 +12,35 @@ from .scimago_processing import (
     REVERTED_ORDER
 )
 
-class SortBy(HorizontalGroup):
+# class SortBy(HorizontalGroup):
+#     DEFAULT_CLASSES = 'filter-widget'
+
+#     def compose(self) -> ComposeResult:
+
+#         yield VerticalGroup(
+#             Label(content='Sort by', id='sort-by-label'),
+#             Select[str](options=[(c, c) for c in SORT_BY_COLS], 
+#                 prompt='Select column', 
+#                 id='sort-by-select'
+#             ),
+#             id='sort-by-vertical-group'
+#         )
+#         yield Checkbox(label='Ascending', value=True, id='sort-by-checkbox')
+
+class SortBy(VerticalGroup):
+    DEFAULT_CLASSES = 'filter-widget'
+
     def compose(self) -> ComposeResult:
-        yield VerticalGroup(
-            Label(content='Sort by', id='sort-by-label'),
+
+        yield Label(content='Sort by', id='sort-by-label')
+        yield HorizontalGroup(
             Select[str](options=[(c, c) for c in SORT_BY_COLS], 
-                   prompt='Select column', 
-                   id='sort-by-select')
+                prompt='Select column', 
+                id='sort-by-select'
+            ),
+            Checkbox(label='Ascending', value=True, id='sort-by-checkbox'),
+            id='sort-by-horizontal-group'
         )
-        yield Checkbox(label='Ascending', value=True, id='sort-by-checkbox')
 
 class Filtering(HorizontalGroup):
     def compose(self) -> ComposeResult:
@@ -76,6 +96,7 @@ class ScimagoDataFrame(DataTable):
 
 
 class ScimagoExplorer(App):
+    CSS_PATH = Path('css') / 'scimago.tcss'
 
     def __init__(self, scimago_df_path: Path):
         super().__init__()

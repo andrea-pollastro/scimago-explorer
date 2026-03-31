@@ -1,0 +1,33 @@
+Screen {
+    layout: vertical;
+}
+
+.filter-widget {
+    margin-top: 1;
+    margin-bottom: 1;
+    margin-left: 1;
+    margin-right: 1;
+}
+
+#sort-by-label {
+    text-style: bold;
+}
+
+#sort-by-controls {
+    width: auto;
+    align: left middle;
+}
+
+#sort-by-select {
+    width: 25;
+    margin-right: 2;
+}
+
+#sort-by-checkbox {
+    width: auto;
+}
+
+ScimagoDataFrame {
+    height: 1fr;
+}
+
