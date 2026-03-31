@@ -52,9 +52,20 @@ class AreasFilter(VerticalGroup):
             id='areas-filter-input'
         )
 
+class TitleFilter(VerticalGroup):
+    DEFAULT_CLASSES = 'filter-widget'
+
+    def compose(self) -> ComposeResult:
+        yield Label(content='Title', id='title-filter-label')
+        yield Input(
+            placeholder='e.g. Nature, Science', 
+            id='title-filter-input'
+        )
+
 class Filtering(HorizontalGroup):
     def compose(self) -> ComposeResult:
         yield SortBy()
         yield TypeFilter()
         yield AreasFilter()
+        yield TitleFilter()
         yield SJRMinFilter()

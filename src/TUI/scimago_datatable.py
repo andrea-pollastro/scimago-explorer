@@ -37,6 +37,7 @@ class ScimagoDataTable(DataTable):
         self.sjr_min: float = float('-inf')
         self.type: Optional[str] = None
         self.areas: list[str] = []
+        self.title: list[str] = []
 
     def on_mount(self) -> None:
         self.cursor_type = "row"
@@ -70,6 +71,14 @@ class ScimagoDataTable(DataTable):
             # Parse comma-separated values and strip whitespace
             self.areas = [area.strip() for area in value.split(',')]
         self.refresh_table()
+    
+    def set_title(self, value: str) -> None:
+        if not value.strip():
+            self.title = []
+        else:
+            # Parse comma-separated values and strip whitespace
+            self.title = [t.strip() for t in value.split(',')]
+        self.refresh_table()
 
     def action_select_row(self) -> None:
         if self.cursor_row is None:
@@ -95,6 +104,16 @@ class ScimagoDataTable(DataTable):
                 pattern = r'(?:^|;)\s*' + re.escape(search_area)
                 self.current_df = self.current_df[
                     self.current_df['areas'].str.contains(pattern, case=False, na=False, regex=True)
+                ]
+
+        # filter by title (vectorized - very fast)
+        # AND logic: all searched terms must be present in the title
+        if self.title:
+            for search_term in self.title:
+                # Pattern: search_term (startswith - case insensitive)
+                pattern = r'^' + re.escape(search_term)
+                self.current_df = self.current_df[
+                    self.current_df['title'].str.contains(pattern, case=False, na=False, regex=True)
                 ]
 
         # set min sjr

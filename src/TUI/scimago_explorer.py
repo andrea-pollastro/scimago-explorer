@@ -50,6 +50,10 @@ class ScimagoExplorer(App):
         elif event.input.id == 'areas-filter-input':
             table = self.query_one(ScimagoDataTable)
             table.set_areas(event.value)
+        
+        elif event.input.id == 'title-filter-input':
+            table = self.query_one(ScimagoDataTable)
+            table.set_title(event.value)
 
     def on_scimago_data_table_row_opened(self, event: ScimagoDataTable.RowOpened) -> None:
         sidebar = self.query_one(Sidebar)

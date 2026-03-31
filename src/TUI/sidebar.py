@@ -8,9 +8,9 @@ import re
 class Sidebar(VerticalScroll):
     QUARTILE_COLORS = {
         "Q1": "green",
-        "Q2": "orange1",
-        "Q3": "red",
-        "Q4": "purple",
+        "Q2": "yellow",
+        "Q3": "orange",
+        "Q4": "red",
     }
 
     def compose(self) -> ComposeResult:
@@ -29,7 +29,8 @@ class Sidebar(VerticalScroll):
 
         scalar_fields = [(COLS_DISPLAY_NAMES[k], k) 
                          for k in details.keys() 
-                         if k not in ['areas', 'categories']]
+                         if k not in ['areas', 'categories']
+                         ]
 
         for label, key in scalar_fields:
             raw_value = details.get(key)
