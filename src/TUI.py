@@ -1,6 +1,7 @@
 from textual.app import App, ComposeResult
 from textual.containers import HorizontalGroup, VerticalGroup
-from textual.widgets import DataTable, Header, Label, Select, Checkbox
+from textual.widgets import DataTable, Header, Label, Select, Checkbox, Input
+from textual.validation import Number
 from pathlib import Path
 from typing import Optional, cast
 from .scimago_processing import (
@@ -12,29 +13,14 @@ from .scimago_processing import (
     REVERTED_ORDER
 )
 
-# class SortBy(HorizontalGroup):
-#     DEFAULT_CLASSES = 'filter-widget'
-
-#     def compose(self) -> ComposeResult:
-
-#         yield VerticalGroup(
-#             Label(content='Sort by', id='sort-by-label'),
-#             Select[str](options=[(c, c) for c in SORT_BY_COLS], 
-#                 prompt='Select column', 
-#                 id='sort-by-select'
-#             ),
-#             id='sort-by-vertical-group'
-#         )
-#         yield Checkbox(label='Ascending', value=True, id='sort-by-checkbox')
-
 class SortBy(VerticalGroup):
     DEFAULT_CLASSES = 'filter-widget'
 
     def compose(self) -> ComposeResult:
-
         yield Label(content='Sort by', id='sort-by-label')
         yield HorizontalGroup(
-            Select[str](options=[(c, c) for c in SORT_BY_COLS], 
+            Select[str](
+                options=[(c, c) for c in SORT_BY_COLS], 
                 prompt='Select column', 
                 id='sort-by-select'
             ),
@@ -42,9 +28,22 @@ class SortBy(VerticalGroup):
             id='sort-by-horizontal-group'
         )
 
+class SJRMinFilter(VerticalGroup):
+    DEFAULT_CLASSES = 'filter-widget'
+
+    def compose(self) -> ComposeResult:
+        yield Label(content='SJR', id='sjr-filter-label')
+        yield Input(
+            placeholder='Min', 
+            type='number', 
+            id='sjr-filter-min',
+            validators=[Number(minimum=0)]
+        )
+
 class Filtering(HorizontalGroup):
     def compose(self) -> ComposeResult:
         yield SortBy()
+        yield SJRMinFilter()
 
 class ScimagoDataFrame(DataTable):
     def __init__(self, scimago_df_path: Path):
@@ -56,6 +55,7 @@ class ScimagoDataFrame(DataTable):
     def reset_filters(self) -> None:
         self.sort_by: Optional[str]  = None
         self.ascending: bool = True
+        self.sjr_min: float = float('-inf')
 
     def on_mount(self) -> None:
         self.cursor_type = "row"
@@ -70,6 +70,10 @@ class ScimagoDataFrame(DataTable):
         
         # reset df to original state
         self.current_df = self.df.copy()
+
+        # set min sjr
+        if self.sjr_min != float('-inf'):
+            self.current_df = self.current_df[self.current_df['sjr'] > self.sjr_min]
         
         # sorting
         if self.sort_by is not None:
@@ -90,8 +94,12 @@ class ScimagoDataFrame(DataTable):
         self.sort_by = value
         self.refresh_table()
 
-    def set_sort_order(self, ascending: bool) -> None:
-        self.ascending = ascending
+    def set_sort_order(self, value: bool) -> None:
+        self.ascending = value
+        self.refresh_table()
+
+    def set_sjr_min(self, value: float) -> None:
+        self.sjr_min = value
         self.refresh_table()
 
 
@@ -108,11 +116,29 @@ class ScimagoExplorer(App):
         yield ScimagoDataFrame(self.scimago_df_path)
 
     def on_select_changed(self, event: Select.Changed) -> None:
-        if event.select.id == "sort-by-select":
+        if event.select.id == 'sort-by-select':
             table = self.query_one(ScimagoDataFrame)
             table.set_sort_column(cast(Optional[str], event.select.selection))
 
     def on_checkbox_changed(self, event: Checkbox.Changed) -> None:
-        if event.checkbox.id == "sort-by-checkbox":
+        if event.checkbox.id == 'sort-by-checkbox':
             table = self.query_one(ScimagoDataFrame)
             table.set_sort_order(event.checkbox.value)
+
+    def on_input_changed(self, event: Input.Changed) -> None:
+        if event.input.id == 'sjr-filter-min':
+            table = self.query_one(ScimagoDataFrame)
+
+            if not event.value:
+                table.set_sjr_min(float('-inf'))
+                return
+            
+            if event.validation_result is not None and not event.validation_result.is_valid:
+                return
+            
+            value = float(event.value)
+            if value <= 0: 
+                return
+            
+            table.set_sjr_min(value)
+    

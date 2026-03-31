@@ -13,11 +13,6 @@ Screen {
     text-style: bold;
 }
 
-#sort-by-controls {
-    width: auto;
-    align: left middle;
-}
-
 #sort-by-select {
     width: 25;
     margin-right: 2;
@@ -31,3 +26,7 @@ ScimagoDataFrame {
     height: 1fr;
 }
 
+#sjr-filter-min {
+    width: 10;
+    margin-right: 2;
+}
