@@ -1,5 +1,6 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Select, Checkbox, Input, Footer
+from textual.binding import Binding
 from pathlib import Path
 from typing import Optional, cast
 from .filtering import Filtering
@@ -8,6 +9,10 @@ from .sidebar import Sidebar
 
 class ScimagoExplorer(App):
     CSS_PATH = Path('css') / 'scimago.tcss'
+
+    BINDINGS = [
+        Binding("s", "toggle_sidebar", "Toggle sidebar"),
+    ]
 
     def __init__(self, scimago_df_path: Path):
         super().__init__()
@@ -58,3 +63,8 @@ class ScimagoExplorer(App):
     def on_scimago_data_table_row_opened(self, event: ScimagoDataTable.RowOpened) -> None:
         sidebar = self.query_one(Sidebar)
         sidebar.update_details(event.row_data)
+        sidebar.remove_class("-hidden")
+
+    def action_toggle_sidebar(self) -> None:
+        sidebar = self.query_one(Sidebar)
+        sidebar.toggle_class("-hidden")

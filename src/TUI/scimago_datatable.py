@@ -88,6 +88,9 @@ class ScimagoDataTable(DataTable):
         selected_row = displayed_df.iloc[self.cursor_row]
         self.post_message(self.RowOpened(selected_row))
 
+    def on_data_table_row_selected(self, event) -> None:
+        self.action_select_row()
+
     def refresh_table(self)-> None:
         # reset df to original state
         self.current_df = self.df.copy()

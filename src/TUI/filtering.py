@@ -15,7 +15,7 @@ class SortBy(VerticalGroup):
                 prompt='Select column', 
                 id='sort-by-select'
             ),
-            Checkbox(label='Ascending', value=True, id='sort-by-checkbox'),
+            Checkbox(label='Asc', value=True, id='sort-by-checkbox'),
             id='sort-by-horizontal-group'
         )
 
