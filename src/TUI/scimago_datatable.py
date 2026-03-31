@@ -33,6 +33,7 @@ class ScimagoDataTable(DataTable):
         self.sort_by: Optional[str]  = None
         self.ascending: bool = True
         self.sjr_min: float = float('-inf')
+        self.type: Optional[str] = None
 
     def on_mount(self) -> None:
         self.cursor_type = "row"
@@ -54,6 +55,10 @@ class ScimagoDataTable(DataTable):
         self.sjr_min = value
         self.refresh_table()
 
+    def set_type(self, value: Optional[str]) -> None:
+        self.type = value
+        self.refresh_table()
+
     def action_select_row(self) -> None:
         if self.cursor_row is None:
             return
@@ -67,6 +72,10 @@ class ScimagoDataTable(DataTable):
         
         # reset df to original state
         self.current_df = self.df.copy()
+
+        # filter by type
+        if self.type is not None:
+            self.current_df = self.current_df[self.current_df['type'] == self.type]
 
         # set min sjr
         if self.sjr_min != float('-inf'):

@@ -16,6 +16,7 @@ COLS_DISPLAY_NAMES = {
     'country': 'Country', 
     'categories': 'Categories', 
     'areas': 'Areas', 
+    r'%female': r'%Female',
 }
 VISIBLE_COLS_TABLE = ['title', 'publisher', 'sjr', 'sjr_best_quartile', 'h_index', 'areas']
 COLS_WIDTH = {
@@ -33,6 +34,7 @@ COLS_WIDTH = {
 }
 SORT_BY_COLS = ['sjr', 'sjr_best_quartile', 'h_index']
 REVERTED_ORDER = ['sjr_best_quartile']
+TYPE = ['journal', 'book series', 'conference and proceedings', 'trade journal']
 
 def clean_dataframe(df: pd.DataFrame) -> None:
     COLUMNS_TO_DROP: List[str] = [
@@ -45,7 +47,6 @@ def clean_dataframe(df: pd.DataFrame) -> None:
         'Citable Docs. (3years)',
         'Citations / Doc. (2years)',
         'Ref. / Doc.',
-        r'%Female',
         'Coverage',
         'Overton',
         'SDG',

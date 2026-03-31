@@ -22,6 +22,19 @@ Screen {
     width: auto;
 }
 
+#type-label {
+    text-style: bold;
+}
+
+#type-select {
+    width: 25;
+    margin-right: 2;
+}
+
+#type-checkbox {
+    width: auto;
+}
+
 ScimagoDataFrame {
     height: 1fr;
 }

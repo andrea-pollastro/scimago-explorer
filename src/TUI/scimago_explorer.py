@@ -25,6 +25,10 @@ class ScimagoExplorer(App):
             table = self.query_one(ScimagoDataTable)
             table.set_sort_column(cast(Optional[str], event.select.selection))
 
+        if event.select.id == 'type-select':
+            table = self.query_one(ScimagoDataTable)
+            table.set_type(cast(Optional[str], event.select.selection))
+
     def on_checkbox_changed(self, event: Checkbox.Changed) -> None:
         if event.checkbox.id == 'sort-by-checkbox':
             table = self.query_one(ScimagoDataTable)

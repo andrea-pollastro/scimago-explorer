@@ -2,7 +2,7 @@ from textual.app import ComposeResult
 from textual.containers import HorizontalGroup, VerticalGroup
 from textual.widgets import Label, Select, Checkbox, Input
 from textual.validation import Number
-from ..scimago_processing import SORT_BY_COLS
+from ..scimago_processing import SORT_BY_COLS, TYPE
 
 class SortBy(VerticalGroup):
     DEFAULT_CLASSES = 'filter-widget'
@@ -31,7 +31,19 @@ class SJRMinFilter(VerticalGroup):
             validators=[Number(minimum=0)]
         )
 
+class TypeFilter(VerticalGroup):
+    DEFAULT_CLASSES = 'filter-widget'
+
+    def compose(self) -> ComposeResult:
+        yield Label(content='Type', id='type-label')
+        yield Select[str](
+            options=[(c, c) for c in TYPE], 
+            prompt='Select type', 
+            id='type-select'
+        )
+
 class Filtering(HorizontalGroup):
     def compose(self) -> ComposeResult:
         yield SortBy()
+        yield TypeFilter()
         yield SJRMinFilter()
