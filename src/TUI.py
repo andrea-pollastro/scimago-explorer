@@ -2,7 +2,7 @@ from textual.app import App, ComposeResult
 from textual.containers import HorizontalGroup, VerticalGroup
 from textual.widgets import DataTable, Header, Label, Select, Checkbox
 from pathlib import Path
-from typing import Optional
+from typing import Optional, cast
 from .scimago_processing import (
     load_data, 
     COLS_DISPLAY_NAMES, 
@@ -89,7 +89,7 @@ class ScimagoExplorer(App):
     def on_select_changed(self, event: Select.Changed) -> None:
         if event.select.id == "sort-by-select":
             table = self.query_one(ScimagoDataFrame)
-            table.set_sort_column(event.select.selection)
+            table.set_sort_column(cast(Optional[str], event.select.selection))
 
     def on_checkbox_changed(self, event: Checkbox.Changed) -> None:
         if event.checkbox.id == "sort-by-checkbox":
