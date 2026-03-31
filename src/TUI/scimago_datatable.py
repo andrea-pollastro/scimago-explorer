@@ -107,7 +107,7 @@ class ScimagoDataTable(DataTable):
         if self.type is not None:
             self.current_df = self.current_df[self.current_df['type'] == self.type]
 
-        # filter by areas (vectorized - very fast)
+        # filter by areas
         # AND logic: all searched areas must be present in the row
         if self.areas:
             for search_area in self.areas:
@@ -117,7 +117,7 @@ class ScimagoDataTable(DataTable):
                     self.current_df['areas'].str.contains(pattern, case=False, na=False, regex=True)
                 ]
 
-        # filter by publisher (vectorized - very fast)
+        # filter by publisher
         # OR logic: any of the searched publishers can match
         if self.publisher:
             # Build OR pattern for all publishers
@@ -127,7 +127,7 @@ class ScimagoDataTable(DataTable):
                 self.current_df['publisher'].str.contains(combined_pattern, case=False, na=False, regex=True)
             ]
 
-        # filter by title (vectorized - very fast)
+        # filter by title
         # AND logic: all searched terms must be present in the title
         if self.title:
             for search_term in self.title:
