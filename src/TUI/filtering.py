@@ -52,6 +52,16 @@ class AreasFilter(VerticalGroup):
             id='areas-filter-input'
         )
 
+class PublisherFilter(VerticalGroup):
+    DEFAULT_CLASSES = 'filter-widget'
+
+    def compose(self) -> ComposeResult:
+        yield Label(content='Publisher', id='publisher-filter-label')
+        yield Input(
+            placeholder='e.g. Elsevier, Nature', 
+            id='publisher-filter-input'
+        )
+
 class TitleFilter(VerticalGroup):
     DEFAULT_CLASSES = 'filter-widget'
 
@@ -67,5 +77,6 @@ class Filtering(HorizontalGroup):
         yield SortBy()
         yield TypeFilter()
         yield AreasFilter()
+        yield PublisherFilter()
         yield TitleFilter()
         yield SJRMinFilter()

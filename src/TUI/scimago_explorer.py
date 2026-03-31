@@ -61,6 +61,10 @@ class ScimagoExplorer(App):
             table = self.query_one(ScimagoDataTable)
             table.set_areas(event.value)
         
+        elif event.input.id == 'publisher-filter-input':
+            table = self.query_one(ScimagoDataTable)
+            table.set_publisher(event.value)
+        
         elif event.input.id == 'title-filter-input':
             table = self.query_one(ScimagoDataTable)
             table.set_title(event.value)
