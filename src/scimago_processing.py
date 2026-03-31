@@ -4,19 +4,32 @@ import pandas as pd
 import numpy as np
 
 COLS_DISPLAY_NAMES = {
-    'title' : 'Title',
-    'type' : 'Type',
-    'publisher' : 'Publisher', 
-    'open_access' : 'OA', 
-    'open_access_diamond' : 'OAD', 
-    'sjr' : 'SJR', 
-    'sjr_best_quartile' : 'SJR Q', 
-    'h_index' : 'H-index', 
-    'country' : 'Country', 
-    'categories' : 'Categories', 
-    'areas' : 'Areas', 
+    'title': 'Title',
+    'type': 'Type',
+    'publisher': 'Publisher', 
+    'open_access': 'OA', 
+    'open_access_diamond': 'OAD', 
+    'sjr': 'SJR', 
+    'sjr_best_quartile': 'SJR Q', 
+    'h_index': 'H-index', 
+    'country': 'Country', 
+    'categories': 'Categories', 
+    'areas': 'Areas', 
 }
-VISIBLE_COLS_TABLE = ['title', 'publisher', 'sjr', 'sjr_best_quartile', 'h_index']
+VISIBLE_COLS_TABLE = ['title', 'publisher', 'sjr', 'sjr_best_quartile', 'h_index', 'areas']
+COLS_WIDTH = {
+    'title': 40,
+    'type': 10,
+    'publisher': 30, 
+    'open_access': 10, 
+    'open_access_diamond': 10, 
+    'sjr': 8, 
+    'sjr_best_quartile': 8, 
+    'h_index': 8, 
+    'country': 30, 
+    'categories': 50, 
+    'areas': None, 
+}
 
 def clean_dataframe(df: pd.DataFrame) -> None:
     COLUMNS_TO_DROP: List[str] = [
