@@ -27,10 +27,11 @@ class Sidebar(VerticalScroll):
         self._mount_title(title)
         self._mount_section_header("Details")
 
-        scalar_fields = [(COLS_DISPLAY_NAMES[k], k) 
-                         for k in details.keys() 
-                         if k not in ['areas', 'categories']
-                         ]
+        scalar_fields = [
+            (COLS_DISPLAY_NAMES[k], k) 
+            for k in details.keys() 
+            if k not in ['areas', 'categories']
+        ]
 
         for label, key in scalar_fields:
             raw_value = details.get(key)
