@@ -42,8 +42,19 @@ class TypeFilter(VerticalGroup):
             id='type-select'
         )
 
+class AreasFilter(VerticalGroup):
+    DEFAULT_CLASSES = 'filter-widget'
+
+    def compose(self) -> ComposeResult:
+        yield Label(content='Areas', id='areas-filter-label')
+        yield Input(
+            placeholder='e.g. Computer Science, Biology', 
+            id='areas-filter-input'
+        )
+
 class Filtering(HorizontalGroup):
     def compose(self) -> ComposeResult:
         yield SortBy()
         yield TypeFilter()
+        yield AreasFilter()
         yield SJRMinFilter()

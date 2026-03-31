@@ -46,6 +46,10 @@ class ScimagoExplorer(App):
                 return
             
             table.set_sjr_min(float(event.value))
+        
+        elif event.input.id == 'areas-filter-input':
+            table = self.query_one(ScimagoDataTable)
+            table.set_areas(event.value)
 
     def on_scimago_data_table_row_opened(self, event: ScimagoDataTable.RowOpened) -> None:
         sidebar = self.query_one(Sidebar)
