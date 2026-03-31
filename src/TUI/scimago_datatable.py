@@ -84,8 +84,7 @@ class ScimagoDataTable(DataTable):
         if self.cursor_row is None:
             return
 
-        displayed_df = self.current_df.head(100)
-        selected_row = displayed_df.iloc[self.cursor_row]
+        selected_row = self.current_df.iloc[self.cursor_row]
         self.post_message(self.RowOpened(selected_row))
 
     def on_data_table_row_selected(self, event) -> None:
@@ -140,6 +139,7 @@ class ScimagoDataTable(DataTable):
 
         # populating table
         self.clear()
-        for idx, row in self.current_df[VISIBLE_COLS_TABLE].head(100).iterrows():
+        # for idx, row in self.current_df[VISIBLE_COLS_TABLE].head(200).iterrows():
+        for idx, row in self.current_df[VISIBLE_COLS_TABLE].iterrows():
             self.add_row(*[str(x) for x in row], key=str(idx))
     

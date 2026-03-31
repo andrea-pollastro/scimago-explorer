@@ -1,5 +1,5 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Header, Select, Checkbox, Input, Footer
+from textual.widgets import Header, Select, Checkbox, Input, Footer, Static
 from textual.binding import Binding
 from pathlib import Path
 from typing import Optional, cast
@@ -20,6 +20,11 @@ class ScimagoExplorer(App):
 
     def compose(self) -> ComposeResult:
         yield Header()
+        yield Static(
+            "Scimago Explorer: explore journal rankings from the ScimagoJR 2024 dataset.\n"
+            "Use the filters below to search, filter, and sort journals.\n"
+            "Click a row or press Enter to open the journal details panel."
+        )
         yield Filtering()
         yield Sidebar(classes='-hidden')
         yield ScimagoDataTable(self.scimago_df_path)
