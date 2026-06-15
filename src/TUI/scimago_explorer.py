@@ -21,7 +21,7 @@ class ScimagoExplorer(App):
     def compose(self) -> ComposeResult:
         yield Header()
         yield Static(
-            "Scimago Explorer: explore journal rankings from the ScimagoJR 2024 dataset.\n"
+            "Scimago Explorer: explore journal rankings from the ScimagoJR dataset.\n"
             "Use the filters below to search, filter, and sort journals.\n"
             "Click a row or press Enter to open the journal details panel."
         )
@@ -60,11 +60,11 @@ class ScimagoExplorer(App):
         elif event.input.id == 'areas-filter-input':
             table = self.query_one(ScimagoDataTable)
             table.set_areas(event.value)
-        
-        elif event.input.id == 'publisher-filter-input':
+
+        elif event.input.id == 'categories-filter-input':
             table = self.query_one(ScimagoDataTable)
-            table.set_publisher(event.value)
-        
+            table.set_categories(event.value)
+
         elif event.input.id == 'title-filter-input':
             table = self.query_one(ScimagoDataTable)
             table.set_title(event.value)

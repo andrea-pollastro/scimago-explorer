@@ -40,7 +40,7 @@ def clean_dataframe(df: pd.DataFrame) -> None:
     COLUMNS_TO_DROP: List[str] = [
         'Rank',
         'Sourceid',
-        'Total Docs. (2024)',
+        'Total Docs. (2025)',
         'Total Docs. (3years)',
         'Total Refs.',
         'Total Citations (3years)',
@@ -49,7 +49,7 @@ def clean_dataframe(df: pd.DataFrame) -> None:
         'Ref. / Doc.',
         'Coverage',
         'Overton',
-        'SDG',
+        # 'SDG',
         'Region',
         'Publisher.1'
     ]

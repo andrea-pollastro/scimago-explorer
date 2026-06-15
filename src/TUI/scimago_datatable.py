@@ -37,7 +37,7 @@ class ScimagoDataTable(DataTable):
         self.sjr_min: float = float('-inf')
         self.type: Optional[str] = None
         self.areas: list[str] = []
-        self.publisher: list[str] = []
+        self.categories: list[str] = []
         self.title: list[str] = []
 
     def on_mount(self) -> None:
@@ -69,16 +69,14 @@ class ScimagoDataTable(DataTable):
         if not value.strip():
             self.areas = []
         else:
-            # Parse comma-separated values and strip whitespace
             self.areas = [area.strip() for area in value.split(',')]
         self.refresh_table()
-    
-    def set_publisher(self, value: str) -> None:
+
+    def set_categories(self, value: str) -> None:
         if not value.strip():
-            self.publisher = []
+            self.categories = []
         else:
-            # Parse comma-separated values and strip whitespace
-            self.publisher = [pub.strip() for pub in value.split(',')]
+            self.categories = [cat.strip() for cat in value.split(',')]
         self.refresh_table()
     
     def set_title(self, value: str) -> None:
@@ -111,21 +109,19 @@ class ScimagoDataTable(DataTable):
         # AND logic: all searched areas must be present in the row
         if self.areas:
             for search_area in self.areas:
-                # Pattern: (^|;)\s*search_area (startswith - case insensitive)
                 pattern = r'(?:^|;)\s*' + re.escape(search_area)
                 self.current_df = self.current_df[
                     self.current_df['areas'].str.contains(pattern, case=False, na=False, regex=True)
                 ]
 
-        # filter by publisher
-        # OR logic: any of the searched publishers can match
-        if self.publisher:
-            # Build OR pattern for all publishers
-            patterns = [re.escape(pub) for pub in self.publisher]
-            combined_pattern = '|'.join(patterns)
-            self.current_df = self.current_df[
-                self.current_df['publisher'].str.contains(combined_pattern, case=False, na=False, regex=True)
-            ]
+        # filter by categories
+        # AND logic: all searched categories must be present in the row
+        if self.categories:
+            for search_cat in self.categories:
+                pattern = r'(?:^|;)\s*' + re.escape(search_cat)
+                self.current_df = self.current_df[
+                    self.current_df['categories'].str.contains(pattern, case=False, na=False, regex=True)
+                ]
 
         # filter by title
         # AND logic: all searched terms must be present in the title
