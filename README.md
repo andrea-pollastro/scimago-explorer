@@ -9,7 +9,7 @@ A terminal UI (TUI) for browsing and filtering [Scimago Journal & Country Rank](
 
 Load a Scimago journal ranking CSV export and interactively filter by type, minimum SJR, subject areas, categories, and journal name, sort the results, and inspect full details (including per-category quartiles) for any journal.
 
-![Demo](docs/demo.gif)
+![Demo](docs/demo.png)
 
 ## Requirements
 

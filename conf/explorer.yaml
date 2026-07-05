@@ -13,7 +13,7 @@ column_width_weights:
   "Title": 1
   "Publisher": 0.8
   "SJR": 0.2
-  "SJR Best Quartile": 0.3
+  "SJR Best Quartile": 0.4
   "H index": 0.25
 
 search_bar_weights:
