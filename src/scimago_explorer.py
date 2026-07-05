@@ -1,4 +1,3 @@
-import time
 from textual.app import App, ComposeResult
 from textual.widgets import (
     Footer, 
@@ -18,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class ExplorerConfig:
+    page_size: int
     display_columns: list[str] = field(default_factory=list)
     column_width_weights: dict[str, float] = field(default_factory=dict)
     search_bar_weights: dict[str, float] = field(default_factory=dict)
@@ -35,7 +35,11 @@ class ScimagoExplorer(App):
     }
     """
 
-    BINDINGS = [("d", "toggle_dark", "Toggle dark mode")]
+    BINDINGS = [
+        ("d", "toggle_dark", "Toggle dark mode"),
+        ("n", "next_page", "Next page"),
+        ("p", "prev_page", "Previous page"),
+    ]
 
     def __init__(self, df: pd.DataFrame, config: ExplorerConfig):
         super().__init__()
@@ -44,6 +48,7 @@ class ScimagoExplorer(App):
         self.sort_by_options = [('H index', 'H index'), ('SJR', 'SJR')]
         self.config = config
         self._current_filtered = df
+        self._current_page = 0
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
@@ -57,12 +62,6 @@ class ScimagoExplorer(App):
             yield DataTable(id="results_table", cursor_type="row")
             yield DetailPanel(id="detail_panel")
         yield Footer()
-
-    def action_toggle_dark(self) -> None:
-        """An action to toggle dark mode."""
-        self.theme = (
-            "textual-dark" if self.theme == "textual-light" else "textual-light"
-        )
 
     def on_mount(self) -> None:
         self.call_after_refresh(self._setup_table_columns)
@@ -119,14 +118,21 @@ class ScimagoExplorer(App):
             filtered = filtered.sort_values(sort_by_value, ascending=is_ascending)
 
         self._current_filtered = filtered.reset_index(drop=True)
+        self._current_page = 0
+        self._render_current_page()
 
+    def _render_current_page(self) -> None:
+        start = self._current_page * self.config.page_size
+        end = start + self.config.page_size
         display_columns = self.config.display_columns
+        page_data = self._current_filtered.iloc[start:end]
+
         table = self.query_one(DataTable)
         table.clear(columns=False)
+        table.add_rows(page_data[display_columns].itertuples(index=False, name=None))
 
-        start = time.perf_counter()
-        table.add_rows(self._current_filtered[display_columns].itertuples(index=False, name=None))
-        logger.debug("add_rows | rows=%d elapsed=%.3fs", len(self._current_filtered), time.perf_counter() - start)
+        total_pages = max(1, -(-len(self._current_filtered) // self.config.page_size))
+        self.sub_title = f"Page {self._current_page + 1}/{total_pages} ({len(self._current_filtered)} results)"
 
     def on_input_changed(self, event: Input.Changed) -> None:
         if hasattr(self, "_filter_timer"):
@@ -140,10 +146,27 @@ class ScimagoExplorer(App):
         self.apply_filters()
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
-        row_index = event.cursor_row
-        if row_index >= len(self._current_filtered):
+        absolute_index = self._current_page * self.config.page_size + event.cursor_row
+        if absolute_index >= len(self._current_filtered):
             return
 
-        row_data = self._current_filtered.iloc[row_index].to_dict()
+        row_data = self._current_filtered.iloc[absolute_index].to_dict()
         detail_panel = self.query_one("#detail_panel", DetailPanel)
         detail_panel.show_journal(row_data)
+
+    def action_next_page(self) -> None:
+        total_pages = max(1, -(-len(self._current_filtered) // self.config.page_size))
+        if self._current_page + 1 < total_pages:
+            self._current_page += 1
+            self._render_current_page()
+
+    def action_prev_page(self) -> None:
+        if self._current_page > 0:
+            self._current_page -= 1
+            self._render_current_page()
+
+    def action_toggle_dark(self) -> None:
+        """An action to toggle dark mode."""
+        self.theme = (
+            "textual-dark" if self.theme == "textual-light" else "textual-light"
+        )

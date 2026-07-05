@@ -1,3 +1,5 @@
+page_size: 1000
+
 display_columns: 
   - "Title"
   - "Publisher"
