@@ -1,0 +1,22 @@
+display_columns: 
+  - "Title"
+  - "Publisher"
+  - "SJR"
+  - "SJR Best Quartile"
+  - "H index"
+
+column_width_weights:
+  "Title": 1
+  "Publisher": 0.8
+  "SJR": 0.2
+  "SJR Best Quartile": 0.3
+  "H index": 0.25
+
+search_bar_weights:
+  type_filter: 1.2
+  min_sjr: 0.4
+  sort_by: 0.6
+  areas_filter: 1.5
+  categories_filter: 1.5
+  journal_name_filter: 1.5
+  sort_order: 0.35

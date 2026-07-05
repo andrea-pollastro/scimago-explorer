@@ -1,0 +1,18 @@
+path: data/scimagojr 2025.csv
+sep: ";"
+columns_to_drop:
+  - Rank
+  - Sourceid
+  - Total Docs. (2025)
+  - Total Docs. (3years)
+  - Total Refs.
+  - Total Citations (3years)
+  - Citable Docs. (3years)
+  - Citations / Doc. (2years)
+  - Ref. / Doc.
+  - "%Female"
+  - Overton
+  - Publisher.1
+
+nan_map:
+  Publisher: n/a
