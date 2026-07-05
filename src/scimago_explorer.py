@@ -10,6 +10,7 @@ from textual.widgets import (
     Static,
 )
 from textual.containers import Horizontal
+from textual.css.query import NoMatches
 from dataclasses import dataclass, field
 from .components.detail_panel import DetailPanel
 from .components.search_bar import SearchBar
@@ -38,7 +39,7 @@ class ScimagoExplorer(App):
     def __init__(self, df: pd.DataFrame, config: ExplorerConfig):
         super().__init__()
         self.df = df
-        self.type_options = [(t.capitalize(), t) for t in df['Type'].unique()]
+        self.type_options = [(t.capitalize(), t) for t in df['Type'].dropna().unique()]
         self.sort_by_options = [('H index', 'H index'), ('SJR', 'SJR')]
         self.config = config
         self._current_filtered = df
@@ -180,8 +181,8 @@ class ScimagoExplorer(App):
         for widget_id in ("#help_text", "#search_bar", "#results_table", "#detail_panel"):
             try:
                 self.query_one(widget_id).display = not too_small
-            except Exception:
-                pass
+            except NoMatches:
+                logger.warning("Widget %s not found during resize", widget_id)
 
         warning = self.query_one("#resize_warning", Static)
         warning.display = too_small

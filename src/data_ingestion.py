@@ -59,7 +59,7 @@ def _sjr_to_float(df: pd.DataFrame) -> pd.DataFrame:
         .replace('nan', np.nan)
         .astype(float)
     )
-    logger.debug("SJR convertita a float | NaN residui=%d", df['SJR'].isna().sum())
+    logger.debug("SJR converted to float | remaining NaN=%d", df['SJR'].isna().sum())
     return df
 
 def _precompute_lowercase(df: pd.DataFrame) -> pd.DataFrame:

@@ -1,3 +1,4 @@
+import argparse
 import logging
 import yaml
 from src.data_ingestion import ScimagoConfig, ingest_data
@@ -8,7 +9,7 @@ def setup_logging(enabled: bool = True, level=logging.INFO, log_file: str = 'app
     if not enabled:
         logging.disable(logging.CRITICAL)
         return
-    
+
     logging.basicConfig(
         level=level,
         format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
@@ -16,14 +17,33 @@ def setup_logging(enabled: bool = True, level=logging.INFO, log_file: str = 'app
         handlers=[logging.FileHandler(log_file)],
     )
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Scimago Explorer")
+    parser.add_argument(
+        "--log-level",
+        default=None,
+        choices=["DEBUG", "INFO", "WARNING", "ERROR"],
+        help="Enable logging at the given level (disabled by default)",
+    )
+    parser.add_argument("--log-file", default="app.log", help="Path to the log file")
+    return parser.parse_args()
+
 if __name__ == '__main__':
+    args = parse_args()
     PROJECT_ROOT = Path(__file__).resolve().parent
-    setup_logging(enabled=False, level=logging.DEBUG)
+    setup_logging(
+        enabled=args.log_level is not None,
+        level=getattr(logging, args.log_level or "INFO"),
+        log_file=args.log_file,
+    )
 
     # ingest scimago data
     with open(PROJECT_ROOT / "conf" / "scimago_data.yaml" , 'r') as f:
         yaml_config = yaml.safe_load(f)
-    yaml_config["path"] = str(PROJECT_ROOT / yaml_config["path"].lstrip('/'))
+    data_path = Path(yaml_config["path"])
+    if not data_path.is_absolute():
+        data_path = PROJECT_ROOT / data_path
+    yaml_config["path"] = str(data_path)
 
     scimago_config = ScimagoConfig(**yaml_config)
     df = ingest_data(config=scimago_config)
