@@ -1,0 +1,24 @@
+#help_text {
+    color: $text-muted;
+    padding: 1;
+    text-style: bold;
+}
+#resize_warning {
+    display: none;
+    color: $warning;
+    padding: 1;
+    text-align: center;
+}
+#search_bar {
+    border: solid $primary;
+    padding: 0 1;
+}
+#results_table {
+    width: 3fr;
+    border: solid $primary;
+}
+#detail_panel {
+    width: 1fr;
+    border: solid $primary;
+    padding: 1;
+}

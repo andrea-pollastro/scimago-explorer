@@ -64,11 +64,13 @@ class SearchBar(HorizontalGroup):
         type_options: list[tuple[str, str]],
         sort_by_options: list[tuple[str, str]],
         field_weights: dict[str, float] | None = None,
+        widget_id: str | None = None,
     ):
-        super().__init__()
+        super().__init__(id=widget_id)
         self.type_options = type_options
         self.sort_by_options = sort_by_options
         self.weights = field_weights or {}
+        self.widget_id = widget_id
 
     def compose(self) -> ComposeResult:
         yield SelectComponent(

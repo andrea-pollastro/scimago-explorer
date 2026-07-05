@@ -1,4 +1,6 @@
-page_size: 1000
+page_size: 100
+min_width: 160
+min_height: 24
 
 display_columns: 
   - "Title"

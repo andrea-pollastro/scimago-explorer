@@ -1,3 +1,4 @@
+from pathlib import Path
 from textual.app import App, ComposeResult
 from textual.widgets import (
     Footer, 
@@ -6,6 +7,7 @@ from textual.widgets import (
     Select,
     DataTable,
     Switch,
+    Static,
 )
 from textual.containers import Horizontal
 from dataclasses import dataclass, field
@@ -18,22 +20,14 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ExplorerConfig:
     page_size: int
+    min_width: int
+    min_height: int
     display_columns: list[str] = field(default_factory=list)
     column_width_weights: dict[str, float] = field(default_factory=dict)
     search_bar_weights: dict[str, float] = field(default_factory=dict)
 
 class ScimagoExplorer(App):
-    """A Textual app to manage stopwatches."""
-    CSS = """
-    #results_table {
-        width: 3fr;
-    }
-    #detail_panel {
-        width: 1fr;
-        border-left: solid $primary;
-        padding: 1;
-    }
-    """
+    CSS_PATH = Path(__file__).parent / "css" / "explorer.tcss"
 
     BINDINGS = [
         ("d", "toggle_dark", "Toggle dark mode"),
@@ -53,10 +47,16 @@ class ScimagoExplorer(App):
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
         yield Header()
+        yield Static("", id="resize_warning")
+        yield Static(
+            "Filter journals below. Areas/Categories accept comma-separated terms (all must match). Press Enter on a result for full details.",
+            id="help_text",
+        )
         yield SearchBar(
             type_options=self.type_options, 
             sort_by_options=self.sort_by_options,
             field_weights=self.config.search_bar_weights,
+            widget_id="search_bar",
         )
         with Horizontal():
             yield DataTable(id="results_table", cursor_type="row")
@@ -64,6 +64,9 @@ class ScimagoExplorer(App):
         yield Footer()
 
     def on_mount(self) -> None:
+        self.query_one("#search_bar").border_title = "Filters"
+        self.query_one("#results_table", DataTable).border_title = "Results"
+        self.query_one("#detail_panel", DetailPanel).border_title = "Journal Details"
         self.call_after_refresh(self._setup_table_columns)
 
     def _setup_table_columns(self) -> None:
@@ -127,12 +130,12 @@ class ScimagoExplorer(App):
         display_columns = self.config.display_columns
         page_data = self._current_filtered.iloc[start:end]
 
-        table = self.query_one(DataTable)
+        table = self.query_one("#results_table", DataTable)
         table.clear(columns=False)
         table.add_rows(page_data[display_columns].itertuples(index=False, name=None))
 
         total_pages = max(1, -(-len(self._current_filtered) // self.config.page_size))
-        self.sub_title = f"Page {self._current_page + 1}/{total_pages} ({len(self._current_filtered)} results)"
+        table.border_title = f"Results — Page {self._current_page + 1}/{total_pages} ({len(self._current_filtered)} total)"
 
     def on_input_changed(self, event: Input.Changed) -> None:
         if hasattr(self, "_filter_timer"):
@@ -170,3 +173,20 @@ class ScimagoExplorer(App):
         self.theme = (
             "textual-dark" if self.theme == "textual-light" else "textual-light"
         )
+
+    def on_resize(self, event) -> None:
+        too_small = self.size.width < self.config.min_width or self.size.height < self.config.min_height
+
+        for widget_id in ("#help_text", "#search_bar", "#results_table", "#detail_panel"):
+            try:
+                self.query_one(widget_id).display = not too_small
+            except Exception:
+                pass
+
+        warning = self.query_one("#resize_warning", Static)
+        warning.display = too_small
+        if too_small:
+            warning.update(
+                f"Terminal too small ({self.size.width}x{self.size.height}). "
+                f"Please resize to at least {self.config.min_width}x{self.config.min_height}."
+            )

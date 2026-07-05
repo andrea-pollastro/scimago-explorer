@@ -16,10 +16,9 @@ def setup_logging(enabled: bool = True, level=logging.INFO, log_file: str = 'app
         handlers=[logging.FileHandler(log_file)],
     )
 
-PROJECT_ROOT = Path(__file__).resolve().parent
-
 if __name__ == '__main__':
-    setup_logging(enabled=True, level=logging.DEBUG)
+    PROJECT_ROOT = Path(__file__).resolve().parent
+    setup_logging(enabled=False, level=logging.DEBUG)
 
     # ingest scimago data
     with open(PROJECT_ROOT / "conf" / "scimago_data.yaml" , 'r') as f:
