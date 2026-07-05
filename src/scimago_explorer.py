@@ -1,6 +1,4 @@
 import time
-import logging
-logger = logging.getLogger(__name__)
 from textual.app import App, ComposeResult
 from textual.widgets import (
     Footer, 
@@ -8,12 +6,15 @@ from textual.widgets import (
     Input,
     Select,
     DataTable,
+    Switch,
 )
 from textual.containers import Horizontal
 from dataclasses import dataclass, field
 from .components.detail_panel import DetailPanel
 from .components.search_bar import SearchBar
 import pandas as pd
+import logging
+logger = logging.getLogger(__name__)
 
 @dataclass
 class ExplorerConfig:
@@ -79,7 +80,7 @@ class ScimagoExplorer(App):
             table.add_column(col, width=w)
 
         self.apply_filters()
-
+    
     def apply_filters(self) -> None:
         filtered = self.df
 
@@ -114,7 +115,8 @@ class ScimagoExplorer(App):
 
         sort_by_value = self.query_one("#sort_by", Select).value
         if isinstance(sort_by_value, str):
-            filtered = filtered.sort_values(sort_by_value, ascending=False)
+            is_ascending = self.query_one("#sort_order", Switch).value
+            filtered = filtered.sort_values(sort_by_value, ascending=is_ascending)
 
         self._current_filtered = filtered.reset_index(drop=True)
 
@@ -132,6 +134,9 @@ class ScimagoExplorer(App):
         self._filter_timer = self.set_timer(0.3, self.apply_filters)
 
     def on_select_changed(self, event: Select.Changed) -> None:
+        self.apply_filters()
+
+    def on_switch_changed(self, event: Switch.Changed) -> None:
         self.apply_filters()
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:

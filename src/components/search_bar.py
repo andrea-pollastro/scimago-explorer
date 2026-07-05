@@ -84,7 +84,7 @@ class SearchBar(HorizontalGroup):
             weight=self.weights.get("sort_by", 1),
         )
         yield SortOrderComponent(
-            label="Desc.", widget_id="sort_order",
+            label="Asc.", widget_id="sort_order",
             weight=self.weights.get("sort_order", 1),
         )
         yield TextComponent(
