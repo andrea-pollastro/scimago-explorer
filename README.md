@@ -1,10 +1,15 @@
 # scimago-explorer
 
 [![CI](https://github.com/andrea-pollastro/scimago-explorer/actions/workflows/ci.yml/badge.svg)](https://github.com/andrea-pollastro/scimago-explorer/actions/workflows/ci.yml)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![Built with Textual](https://img.shields.io/badge/built%20with-Textual-5967FF.svg)](https://github.com/Textualize/textual)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A terminal UI (TUI) for browsing and filtering [Scimago Journal & Country Rank](https://www.scimagojr.com/journalrank.php) data, built with [Textual](https://github.com/Textualize/textual).
 
 Load a Scimago journal ranking CSV export and interactively filter by type, minimum SJR, subject areas, categories, and journal name, sort the results, and inspect full details (including per-category quartiles) for any journal.
+
+![Demo](docs/demo.png)
 
 ## Requirements
 
